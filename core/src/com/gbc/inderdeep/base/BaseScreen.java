@@ -11,8 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -27,8 +29,6 @@ public class BaseScreen implements Screen, InputProcessor {
 
     protected Stage mainStage;
     public Stage stage;
-    protected SpriteBatch batch;
-    protected Texture backgroundImage;
     protected MainGame game;
     protected ScreenManager screenManager;
 //    protected FontGenerator fontGenerator;
@@ -42,48 +42,23 @@ public class BaseScreen implements Screen, InputProcessor {
     //SKINS
     protected Skin skin;
 
+    //Actors
+    protected ActorBeta background;
 
     //TABLES
     protected Table table;
-    Container<Table> tableContainer;
+    protected Container<Table> tableContainer;
+
+    //LABEL
+    Label.LabelStyle labelStyle;
+
+    //BUTTON
+    Button.ButtonStyle buttonStyle;
 
     public BaseScreen(){
-        this.reset();
-    }
-
-    public void reset(){
-        ScreenViewport screenViewport = new ScreenViewport();
-        mainStage = new Stage(screenViewport);
-        stage = new Stage(screenViewport);
-        table = new Table();
-        batch = new SpriteBatch();
-        game = MainGame.getInstance();
-        screenManager = ScreenManager.getInstance();
-//        fontGenerator = FontGenerator.getInstance();
-        soundManager = SoundManager.getInstance();
-
-        tableContainer = new Container<Table>();
-
-        float cw = screenWidth * 0.5f;
-        float ch = screenHeight * 1.0f;
-
-        tableContainer.setSize(screenWidth / 3, screenHeight);
-        tableContainer.setPosition((screenWidth - cw) - (tableContainer.getWidth() / 2), (screenHeight - ch) / 2.0f);
-        tableContainer.fillX();
-        tableContainer.setDebug(true);
-
-        this.table.setSize(screenWidth, screenHeight);
-        this.table.setBounds(0, 0, Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
-
-        tableContainer.setActor(this.table);
-
-    }
-
-    @Override
-    public void show() {
-        this.initialSetup();
-        this.reset();
         this.initializeVariables();
+        this.reset();
+        this.setupScene();
     }
 
     protected void initialSetup() {
@@ -108,22 +83,61 @@ public class BaseScreen implements Screen, InputProcessor {
         skin = new Skin(Gdx.files.internal("skins/quantum-horizon/skin/quantum-horizon-ui.json"));
     }
 
-    protected void update(float delta){
+    public void reset(){
+        ScreenViewport screenViewport = new ScreenViewport();
+        mainStage = new Stage(screenViewport);
+        stage = new Stage(screenViewport);
+        table = new Table();
+        game = MainGame.getInstance();
+        screenManager = ScreenManager.getInstance();
+//        fontGenerator = FontGenerator.getInstance();
+        soundManager = SoundManager.getInstance();
 
+        tableContainer = new Container<Table>();
+
+        float cw = screenWidth * 0.5f;
+        float ch = screenHeight * 1.0f;
+
+        tableContainer.setSize(screenWidth, screenHeight);
+        tableContainer.setPosition((screenWidth - cw) - (tableContainer.getWidth() / 2), (screenHeight - ch) / 2.0f);
+        tableContainer.fillX();
+        tableContainer.setDebug(true);
+
+        this.table.setSize(screenWidth, screenHeight);
+        this.table.setBounds(0, 0, Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
+
+        tableContainer.setActor(this.table);
+
+        //INITIALIZE A DEFAULT BUTTON
+        buttonStyle = new Button.ButtonStyle(skin.getDrawable("button-c"), skin.getDrawable("button-pressed-c"), skin.getDrawable("button-over-pressed-c"));
+
+        //INITIALIZE A LABEL
+        labelStyle = new Label.LabelStyle(skin.get(("title"), Label.LabelStyle.class));
+
+    }
+
+    protected void setupScene(){
+        Gdx.app.log("BaseScreen","Setup screen called from BaseScreen");
+    }
+
+
+    @Override
+    public void show() {
+        this.initialSetup();
+    }
+
+    protected void update(float delta){
     }
 
     @Override
     public void render(float delta) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        this.batch.begin();
-        if(backgroundImage != null){
-            this.batch.draw(backgroundImage,0,0, screenWidth, screenHeight);
-        }
-        this.batch.end();
 
         this.mainStage.act(delta);
         this.stage.act(delta);
+
+        update(delta);
 
         this.mainStage.setDebugAll(true);
 
@@ -131,21 +145,6 @@ public class BaseScreen implements Screen, InputProcessor {
         this.stage.draw();
 
         this.table.setDebug(true);
-        update(delta);
-    }
-
-    protected void addButton(Texture texture, EventListener eventListener, float width, float height){
-
-        Drawable drawable = new TextureRegionDrawable(new TextureRegion(texture));
-        ImageButton button = new ImageButton(drawable);
-
-        button.addListener(eventListener);
-
-        this.table.add(button)
-                .size(width,height)
-                .expandY()
-                .padTop(20)
-                .row();
     }
 
     @Override
@@ -178,22 +177,22 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        System.out.println("MyClass diposed");
-
-        if ( !this.isDisposed ){
-            this.stage.dispose();
-            this.batch.dispose();
-            this.isDisposed = true;
-            this.table.clearListeners();
-            this.table = null;
-            this.stage = null;
-        }
+//        System.out.println("MyClass diposed");
+//
+//        if ( !this.isDisposed ){
+//            this.stage.dispose();
+//            this.isDisposed = true;
+//            this.table.clearListeners();
+//            this.table = null;
+//            this.stage = null;
+//        }
 
     }
 
 
     @Override
     public boolean keyDown(int keycode) {
+
         Gdx.app.log("InKeyDown","InKeyDown");
         if(keycode == Input.Keys.BACK){
             Gdx.app.log("InBack","InBack");

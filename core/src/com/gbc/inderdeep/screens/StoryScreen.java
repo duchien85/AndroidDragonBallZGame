@@ -27,10 +27,10 @@ public class StoryScreen extends BaseScreen {
     DialogBox playerDialogBox;
     DialogBox opponentDialogBox;
 
-    @Override
-    public void initializeVariables() {
-        super.initializeVariables();
-        this.setupScene();
+    private void addBackgroundImage(){
+        background = new ActorBeta(0, 0, mainStage);
+        background.loadTexture(ImageNames.backgroundImage);
+        background.setSize(screenWidth, screenHeight);
     }
 
     private void setupOpponent(){
@@ -92,8 +92,10 @@ public class StoryScreen extends BaseScreen {
         storyScene.addSegment( new SceneSegment( continueKey, Actions.hide() ));
     }
 
-    private void setupScene() {
-        this.backgroundImage = Textures.backgroundImageTexture;
+    @Override
+    protected void setupScene() {
+
+        this.addBackgroundImage();
 
         this.setupOpponent();
 
@@ -108,6 +110,8 @@ public class StoryScreen extends BaseScreen {
 
         storyScene = new Scene();
         mainStage.addActor(storyScene);
+
+        storyScene.addSegment(new SceneSegment(background,Actions.show()));
 
         this.setupSceneWithTextForDialog(playerDialogBox, "Are you ready for our dual, KRILLIN!!");
         this.setupSceneWithTextForDialog(opponentDialogBox, "I certainly am.. Hope you are ready for your defeat!");

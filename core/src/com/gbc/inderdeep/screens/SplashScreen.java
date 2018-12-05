@@ -24,13 +24,7 @@ public class SplashScreen extends BaseScreen {
     private ActorBeta logo;
 
     @Override
-    public void initializeVariables() {
-
-        super.initializeVariables();
-        this.setupScene();
-    }
-
-    private void setupScene(){
+    protected void setupScene(){
 
         float logoX = screenWidth / 2;
         float logoY = screenHeight / 2;
