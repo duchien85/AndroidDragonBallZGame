@@ -53,7 +53,9 @@ public class SplashScreen extends BaseScreen {
 
         if(splashScene.isSceneFinished())
         {
-            ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.STORY_SCREEN,0.5f);
+            //TODO: Updated this later
+//            ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.STORY_SCREEN,0.5f);
+            ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.GAME_SCREEN,0.5f);
         }
 
     }

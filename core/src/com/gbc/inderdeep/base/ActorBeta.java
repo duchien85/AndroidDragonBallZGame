@@ -1,13 +1,11 @@
 package com.gbc.inderdeep.base;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,9 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Intersector.MinimumTranslationVector;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  *  Extend the Actor class to include graphics and collision detection.
@@ -40,6 +36,8 @@ public class ActorBeta extends Group {
 
     private Polygon boundaryPolygon;
 
+    public boolean isOnLeft;
+
     // stores size of game world for all actors
     static Rectangle worldBounds;
 
@@ -58,6 +56,8 @@ public class ActorBeta extends Group {
         deceleration = 0;
 
         boundaryPolygon = null;
+
+        isOnLeft = false;
     }
 
     public ActorBeta(float x, float y, Stage s) {
@@ -83,6 +83,7 @@ public class ActorBeta extends Group {
 
         boundaryPolygon = null;
 
+        isOnLeft = false;
 
     }
 
@@ -112,10 +113,11 @@ public class ActorBeta extends Group {
 
         batch.setColor(c.r, c.g, c.b, c.a);
 
-        if (animation != null && isVisible())
-            batch.draw(animation.getKeyFrame(elapsedTime),
-                    getX(), getY(), getOriginX(), getOriginY(),
-                    getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        if (animation != null && isVisible()) {
+            TextureRegion texture = animation.getKeyFrame(elapsedTime);
+            batch.draw(texture, getX(), getY(), getOriginX(), getOriginY(),
+                        getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        }
 
         super.draw(batch, parentAlpha);
 
@@ -124,6 +126,7 @@ public class ActorBeta extends Group {
     /* Animation methods */
 
     public void setAnimation(Animation<TextureRegion> anim) {
+        elapsedTime = 0;
         animation = anim;
         TextureRegion tr = animation.getKeyFrame(0);
         float w = tr.getRegionWidth();
