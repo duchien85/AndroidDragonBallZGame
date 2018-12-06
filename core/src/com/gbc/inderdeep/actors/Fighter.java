@@ -18,6 +18,8 @@ public class Fighter extends ActorBeta {
     public Animation<TextureRegion> rightPunch;
     public Animation<TextureRegion> rightKick;
 
+    public boolean isAlreadyAttacking = false;
+
     public int acceleration = 900;
 
     private int health = 100;

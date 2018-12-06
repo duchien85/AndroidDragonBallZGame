@@ -53,10 +53,19 @@ public class GameScreen extends BaseScreen {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                if (player.isOnLeft){
-                    player.setAnimation(player.kick);
-                }else{
-                    player.setAnimation(player.rightKick);
+
+                if(!player.isAlreadyAttacking) {
+                    player.isAlreadyAttacking = true;
+
+                    if (player.isOnLeft) {
+                        player.setAnimation(player.kick);
+                    } else {
+                        player.setAnimation(player.rightKick);
+                    }
+
+                    if (player.overlaps(enemy)) {
+                        Gdx.app.log("Damage", "Damage done on kick");
+                    }
                 }
             }
         });
@@ -65,11 +74,21 @@ public class GameScreen extends BaseScreen {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                if (player.isOnLeft){
-                    player.setAnimation(player.punch);
-                }else{
-                    player.setAnimation(player.rightPunch);
+
+                if(!player.isAlreadyAttacking) {
+                    player.isAlreadyAttacking = true;
+
+                    if (player.isOnLeft){
+                        player.setAnimation(player.punch);
+                    }else{
+                        player.setAnimation(player.rightPunch);
+                    }
+
+                    if (player.overlaps(enemy)){
+                        Gdx.app.log("Damage","Damage done on punch");
+                    }
                 }
+
             }
         });
 
@@ -115,6 +134,14 @@ public class GameScreen extends BaseScreen {
         });
     }
 
+    private void setupEnemy(){
+        //CREATE PLAYER : KRILLIN
+        enemy = new Enemy();
+        enemy.setPosition(screenWidth - 600, screenHeight / 4);
+        mainStage.addActor(enemy);
+        enemy.setAnimation(enemy.idle);
+    }
+
     private void setupPlayer(){
         //CREATE PLAYER : GOKU
         player = new Player();
@@ -123,20 +150,12 @@ public class GameScreen extends BaseScreen {
         player.setAnimation(player.idle);
     }
 
-    private void setupEnemy(){
-        //CREATE PLAYER : KRILLIN
-        enemy = new Enemy();
-        enemy.setPosition(screenWidth - 100, screenHeight / 4);
-        mainStage.addActor(enemy);
-        enemy.setAnimation(enemy.idle);
-    }
-
     @Override
     protected void setupScene() {
 
         this.setupBackground();
 
-        ActorBeta.setWorldBounds(screenWidth, screenHeight);
+        ActorBeta.setWorldBounds(screenWidth, screenHeight - 80);
 
         skin = new Skin(Gdx.files.internal(SkinNames.pixelatedUIComponents));
         uiSkin = new Skin(Gdx.files.internal(SkinNames.arcadeUIComponents));
@@ -147,21 +166,9 @@ public class GameScreen extends BaseScreen {
         this.setupPlayerActionButtons();
         this.setupListeners();
 
-        this.setupPlayer();
         this.setupEnemy();
+        this.setupPlayer();
 
-    }
-
-    private void handleTouchPadOnUpdate(float delta){
-        touchpad.act(delta);
-
-//        if(touchpad.getKnobPercentX() > 0.5 && touchpad.getKnobPercentX() < 0.9) {
-//            Gdx.app.log("Delta X", "Knob X is " + touchpad.getKnobPercentX());
-//        }
-//
-//        if(touchpad.getKnobPercentY() > 0.5 && touchpad.getKnobPercentY() < 0.9) {
-//            Gdx.app.log("Delta Y", "Knob Y is " + touchpad.getKnobPercentX());
-//        }
     }
 
     private boolean isPlayerOnLeftOfEnemy(){
@@ -186,17 +193,20 @@ public class GameScreen extends BaseScreen {
     public void update(float delta) {
 
         if(enemy.isAnimationFinished()){
+            player.isAlreadyAttacking = false;
             Animation animation = enemy.isOnLeft ? enemy.idle : enemy.rightIdle;
             enemy.setAnimation(animation);
         }
 
         if(player.isAnimationFinished()){
+            player.isAlreadyAttacking = false;
             Animation animation = player.isOnLeft ? player.idle : player.rightIdle;
             player.setAnimation(animation);
         }
 
         this.handlePlayerRotations();
-        this.handleTouchPadOnUpdate(delta);
+
+        touchpad.act(delta);
 
         if(shouldPlayerMove){
             player.act(delta);
