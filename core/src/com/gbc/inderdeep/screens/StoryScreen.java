@@ -95,7 +95,7 @@ public class StoryScreen extends BaseScreen {
     @Override
     protected void setupScene() {
 
-        SoundManager.getInstance().startBackGroundMusic();
+        this.soundManager.startBackGroundMusic();
 
         this.addBackgroundImage();
 

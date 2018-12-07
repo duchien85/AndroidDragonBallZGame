@@ -203,21 +203,20 @@ public class GameScreen extends BaseScreen {
             fromFighter.isAlreadyAttacking = true;
 
             fromFighter.setAnimation(this.getAnimationOnFighter(fromFighter,attackType));
+
+            int damage;
+            if(attackType == Enumerations.AttackType.PUNCH){
+                damage = 5;
+                this.soundManager.playPunchSound();
+            }
+            else {
+                damage = 10;
+                this.soundManager.playKickSound();
+            }
+
             int oldHealth = onFighter.getHealth();
             if (fromFighter.overlaps(onFighter)) {
                 if(oldHealth > 0){
-                    SoundManager soundManager = SoundManager.getInstance();
-
-                    int damage;
-                    if(attackType == Enumerations.AttackType.PUNCH){
-                        damage = 5;
-                        soundManager.playPunchSound();
-                    }
-                    else {
-                        damage = 10;
-                        soundManager.playKickSound();
-                    }
-
                     int healthAfterDamage = oldHealth - damage;
                     healthAfterDamage = healthAfterDamage < 0 ? 0 : healthAfterDamage;
                     onFighter.setHealth(healthAfterDamage);
