@@ -20,6 +20,10 @@ public class Player extends Fighter {
 
         rightPunch = loadAnimationFromFiles(ImageNames.gokuRightPunch,0.05f,false);
 
+        death = loadAnimationFromFiles(ImageNames.gokuDeath,0.3f,false);
+
+        rightDeath = loadAnimationFromFiles(ImageNames.gokuRightDeath,0.3f,false);
+
         this.setBoundaryRectangle();
 
         setScale(1.8f);

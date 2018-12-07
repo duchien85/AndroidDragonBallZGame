@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,11 +22,12 @@ import com.gbc.inderdeep.actors.Player;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
 import com.gbc.inderdeep.enumerations.Enumerations;
-import com.gbc.inderdeep.managers.ScreenManager;
 import com.gbc.inderdeep.ui.HealthBar;
 import com.gbc.inderdeep.utils.ImageNames;
 import com.gbc.inderdeep.utils.SkinNames;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
+import java.util.Random;
 
 public class GameScreen extends BaseScreen {
 
@@ -57,6 +59,7 @@ public class GameScreen extends BaseScreen {
     private float timeLeftSeconds;
 
     private boolean shouldPlayerMove = false;
+    private boolean shouldEnemyMove = false;
 
     private final int hudImageDimensions = 150;
 
@@ -158,9 +161,8 @@ public class GameScreen extends BaseScreen {
     }
 
     private void updatePlayerHealthBar(){
-        float healthWidthAfterReduction = this.playerInitialHealthBarWidth * (player.getHealth()/player.maxHealth);
+        float healthWidthAfterReduction = this.playerInitialHealthBarWidth * ((float) player.getHealth()/player.maxHealth);
 
-        Gdx.app.log("PlayerHealthBar W",Float.toString(healthWidthAfterReduction));
         this.playerHealthBar.setWidth(healthWidthAfterReduction);
 
         if (player.getHealth() < player.maxHealth * 0.3f ){
@@ -208,9 +210,10 @@ public class GameScreen extends BaseScreen {
                     healthAfterDamage = healthAfterDamage < 0 ? 0 : healthAfterDamage;
                     onFighter.setHealth(healthAfterDamage);
 
-                    float blowImpacet = onFighter.isOnLeft ? 15 : -15;
-                    onFighter.setX(onFighter.getX() + blowImpacet);
+                    float blowImpact = onFighter.isOnLeft ? 15 : -15;
+                    onFighter.setX(onFighter.getX() + blowImpact);
 
+                    this.updatePlayerHealthBar();
                     this.updateEnemyHealthBar();
                 }
             }
@@ -260,6 +263,8 @@ public class GameScreen extends BaseScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 float deltaX = ((Touchpad) actor).getKnobPercentX();
                 float deltaY = ((Touchpad) actor).getKnobPercentY();
+                Gdx.app.log("X",Float.toString(deltaX));
+                Gdx.app.log("Y",Float.toString(deltaY));
                 player.accelarateTo(deltaX,deltaY);
             }
         });
@@ -285,6 +290,7 @@ public class GameScreen extends BaseScreen {
         //CREATE PLAYER : KRILLIN
         enemy = new Enemy(100);
         enemy.setPosition(screenWidth - 600, screenHeight / 4);
+        enemy.acceleration = 400;
         mainStage.addActor(enemy);
         enemy.setAnimation(enemy.idle);
     }
@@ -401,7 +407,15 @@ public class GameScreen extends BaseScreen {
             timeLeftSeconds -= delta;
         }
         else if(timeLeftMinutes == 0 && timeLeftSeconds < 1){
-            Gdx.app.log("Timer","GameOver");
+            this.removeAllLiseners();
+
+            if (player.getHealth() < enemy.getHealth()){
+                this.removeAllLiseners();
+                this.showResult("You Won!");
+            }else {
+                this.removeAllLiseners();
+                this.showResult("You Lost!");
+            }
         }
         else {
             timeLeftMinutes = timeLeftMinutes != 0 ? --timeLeftMinutes : 0;
@@ -423,39 +437,65 @@ public class GameScreen extends BaseScreen {
         overlayTable.setVisible(true);
     }
 
+    private void performFinishingMoveAnimationOn(Fighter fighter){
+        float blowDistance = this.isPlayerOnLeftOfEnemy() ? 60 : -60;
+        float newEnemyX =  fighter.getX() + blowDistance;
+        float newEnemyY = fighter.getY() - blowDistance;
+        fighter.setPosition(newEnemyX,newEnemyY);
+        fighter.setAnimation(this.getAnimationOnFighter(fighter,Enumerations.AttackType.FINISHING_MOVE));
+    }
+
     private void handleWinLooseConditions(){
 
         if(!timesUp && !isEnemyDead && !isPlayerDead){
             if(enemy.getHealth() <= 0){
                 this.isEnemyDead = true;
-
-                float blowDistance = this.isPlayerOnLeftOfEnemy() ? 60 : -60;
-                float newEnemyX =  enemy.getX() + blowDistance;
-                float newEnemyY = enemy.getY() - blowDistance;
-                enemy.setPosition(newEnemyX,newEnemyY);
-                enemy.setAnimation(this.getAnimationOnFighter(enemy,Enumerations.AttackType.FINISHING_MOVE));
-
+                this.performFinishingMoveAnimationOn(enemy);
                 this.removeAllLiseners();
 
                 this.showResult("You Won!");
             }
             else if(player.getHealth() <= 0) {
                 this.isPlayerDead = true;
+                this.performFinishingMoveAnimationOn(player);
                 this.removeAllLiseners();
                 this.showResult("You Lost!");
             }
-        }else if(timesUp) {
+        }
 
-            this.removeAllLiseners();
+    }
+    Random random = new Random(100);
+    private void handleEnemyAI(){
 
-            if (player.getHealth() < enemy.getHealth()){
-                this.removeAllLiseners();
-                this.showResult("You Won!");
-            }else {
-                this.removeAllLiseners();
-                this.showResult("You Lost!");
+
+        if(random.nextInt() % 2 == 0) {
+            this.shouldEnemyMove = true;
+            Vector2 enemyVector = new Vector2(this.enemy.getX(),this.enemy.getY());
+            Vector2 playerVector = new Vector2(this.player.getX(),this.player.getY());
+
+
+            Vector2 resultantVector;
+            if (enemy.getHealth() < 30){
+                resultantVector = enemyVector.sub(playerVector);
+            }
+            else{
+                resultantVector = playerVector.sub(enemyVector);
             }
 
+//            Gdx.app.log("R X",Float.toString(resultantVector.x));
+//            Gdx.app.log("R Y",Float.toString(resultantVector.y));
+
+            this.enemy.resumeMovement();
+
+            this.enemy.accelerateAtAngle(resultantVector.angle());
+        }
+
+        if(enemy.overlaps(player)){
+            this.shouldEnemyMove = false;
+            this.enemy.stopMovement();
+
+            Enumerations.AttackType attackType = random.nextInt() % 2 == 0 ? Enumerations.AttackType.KICK : Enumerations.AttackType.PUNCH;
+            this.performAttack(enemy,player, attackType);
         }
 
     }
@@ -468,6 +508,10 @@ public class GameScreen extends BaseScreen {
             player.act(delta);
         }
 
+        if(shouldEnemyMove){
+            enemy.act(delta);
+        }
+
         player.boundToWorld();
         enemy.boundToWorld();
     }
@@ -476,7 +520,7 @@ public class GameScreen extends BaseScreen {
     public void update(float delta) {
 
         if(enemy.isAnimationFinished() && !isEnemyDead){
-            player.isAlreadyAttacking = false;
+            enemy.isAlreadyAttacking = false;
             Animation animation = enemy.isOnLeft ? enemy.idle : enemy.rightIdle;
             enemy.setAnimation(animation);
         }
@@ -492,6 +536,8 @@ public class GameScreen extends BaseScreen {
         this.handleTimer(delta);
 
         this.handleWinLooseConditions();
+
+        this.handleEnemyAI();
 
         this.handleActorUpdates(delta);
 

@@ -34,6 +34,11 @@ public class ImageNames {
                                                 "sprites/goku/left/kick_5.png",
                                                 "sprites/goku/left/kick_6.png" };
 
+    public static final String[] gokuDeath = { "sprites/goku/left/death_0.png",
+                                                "sprites/goku/left/death_1.png",
+                                                "sprites/goku/left/death_2.png",
+                                                "sprites/goku/left/death_3.png"};
+
     public static final String[] gokuRightIdle = { "sprites/goku/right/idle_0.png",
                                                 "sprites/goku/right/idle_1.png",
                                                 "sprites/goku/right/idle_2.png",
@@ -55,6 +60,11 @@ public class ImageNames {
                                                 "sprites/goku/right/kick_4.png",
                                                 "sprites/goku/right/kick_5.png",
                                                 "sprites/goku/right/kick_6.png" };
+
+    public static final String[] gokuRightDeath = { "sprites/goku/right/death_0.png",
+                                                "sprites/goku/right/death_1.png",
+                                                "sprites/goku/right/death_2.png",
+                                                "sprites/goku/right/death_3.png"};
 
     //KRILLIN Image Assets
     public static final String krillinStoryImage = "sprites/krillin/krillin_story_sprite.png";
