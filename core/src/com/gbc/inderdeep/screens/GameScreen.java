@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -57,6 +59,10 @@ public class GameScreen extends BaseScreen {
     private boolean shouldPlayerMove = false;
 
     private final int hudImageDimensions = 150;
+
+    Table overlayTable;
+    Label label;
+    TextButton restartButton;
 
     private void setupBackground(){
         background = new ActorBeta(0, 0, mainStage);
@@ -199,11 +205,10 @@ public class GameScreen extends BaseScreen {
                 if(oldHealth > 0){
                     int damage = attackType == Enumerations.AttackType.PUNCH ? 5 : 10;
                     int healthAfterDamage = oldHealth - damage;
-
+                    healthAfterDamage = healthAfterDamage < 0 ? 0 : healthAfterDamage;
                     enemy.setHealth(healthAfterDamage);
 
                     this.updateEnemyHealthBar();
-                    Gdx.app.log("Damage", "Damage done on " + attackType.name() + " " + Integer.toString(healthAfterDamage));
                 }
             }
         }
@@ -289,6 +294,54 @@ public class GameScreen extends BaseScreen {
         player.setAnimation(player.idle);
     }
 
+    private void setupWinLooseLabel(){
+        float fontScale = 1.5f;
+
+        label = new Label("You Won!", labelStyle);
+        label.setFontScale(fontScale);
+
+        overlayTable.row().padTop(screenHeight / 12).padBottom(screenHeight / 12);
+        overlayTable.add(label).size(label.getWidth() * fontScale, label.getHeight() * fontScale).expandX();
+    }
+
+    private void setupWinLooseButton(){
+
+        restartButton = new TextButton("Rematch", hudSkin.get(("default"), TextButton.TextButtonStyle.class));
+        restartButton.setOrigin(Align.center);
+        restartButton.setTransform(true);
+        restartButton.setScale(3);
+
+        overlayTable.row().padTop(screenHeight / 12).padBottom(screenHeight / 12);
+        overlayTable.add(restartButton).size(restartButton.getWidth(), restartButton.getHeight()).expandX();
+
+        restartButton.addListener(new ActorGestureListener() {
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchDown(event, x, y, pointer, button);
+                game.setScreen(new GameScreen());
+            }
+        });
+    }
+
+    private void setupWinLooseOverlay(){
+
+        overlayTable = new Table();
+        overlayTable.background(hudSkin.getDrawable("window-c"));
+
+        float tableWidth = screenWidth/3;
+        float tableHeight = 2*screenHeight/3;
+
+        overlayTable.setSize(tableWidth, tableHeight);
+        overlayTable.setPosition(screenWidth/2 - tableWidth/2,screenHeight/2 - tableHeight/2);
+        overlayTable.setVisible(false);
+
+        this.setupWinLooseLabel();
+
+        this.setupWinLooseButton();
+
+        mainStage.addActor(overlayTable);
+    }
+
     @Override
     protected void setupScene() {
 
@@ -312,6 +365,8 @@ public class GameScreen extends BaseScreen {
 
         this.setupEnemy();
         this.setupPlayer();
+
+        this.setupWinLooseOverlay();
 
     }
 
@@ -360,6 +415,11 @@ public class GameScreen extends BaseScreen {
         }
     }
 
+    private void showResult(String text){
+        label.setText(text);
+        overlayTable.setVisible(true);
+    }
+
     private void handleWinLooseConditions(){
 
         if(!timesUp && !isEnemyDead && !isPlayerDead){
@@ -371,29 +431,25 @@ public class GameScreen extends BaseScreen {
                 enemy.setX(newEnemyX);
                 enemy.setAnimation(this.getAnimationOnFighter(enemy,Enumerations.AttackType.FINISHING_MOVE));
 
-                ResultScreen.PLAYER_WON = true;
-                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
-
                 this.removeAllLiseners();
-                Gdx.app.log("WinLooseStatus","Player Won!!");
+
+                this.showResult("You Won!");
             }
             else if(player.getHealth() <= 0) {
                 this.isPlayerDead = true;
-
-                ResultScreen.PLAYER_WON = false;
-                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
-
                 this.removeAllLiseners();
-                Gdx.app.log("WinLooseStatus","Player Lost!!");
+                this.showResult("You Lost!");
             }
-        }else {
-            //TODO: Show win - loose text
+        }else if(timesUp) {
+
+            this.removeAllLiseners();
+
             if (player.getHealth() < enemy.getHealth()){
-                ResultScreen.PLAYER_WON = false;
-                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
+                this.removeAllLiseners();
+                this.showResult("You Won!");
             }else {
-                ResultScreen.PLAYER_WON = true;
-                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
+                this.removeAllLiseners();
+                this.showResult("You Lost!");
             }
 
         }

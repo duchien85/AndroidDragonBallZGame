@@ -35,7 +35,8 @@ public class ScreenManager {
         // Get current screen to dispose it
 //        BaseScreen currentScreen = (BaseScreen) game.getScreen();
         if(currentScreen != null){
-            this.fadeInToScreen(currentScreen,1.0f);
+            this.game.setScreen(currentScreen.getScreen());
+//            this.fadeInToScreen(currentScreen,1.0f);
         }
         else{
 //            this.fadeInToScreen(Enumerations.Screen.MENU_SCREEN,1.0f);

@@ -50,10 +50,10 @@ public class BaseScreen implements Screen, InputProcessor {
     protected Container<Table> tableContainer;
 
     //LABEL
-    Label.LabelStyle labelStyle;
+    protected Label.LabelStyle labelStyle;
 
     //BUTTON
-    Button.ButtonStyle buttonStyle;
+    protected Button.ButtonStyle buttonStyle;
 
     public BaseScreen(){
         this.initializeVariables();
@@ -104,7 +104,7 @@ public class BaseScreen implements Screen, InputProcessor {
 //        tableContainer.setDebug(true);
 
         this.table.setSize(screenWidth, screenHeight);
-        this.table.setBounds(0, 0, Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
+        this.table.setBounds(0, 0, screenWidth, screenWidth);
 
         tableContainer.setActor(this.table);
 
