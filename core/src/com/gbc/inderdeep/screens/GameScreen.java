@@ -194,19 +194,22 @@ public class GameScreen extends BaseScreen {
         return animation;
     }
 
-    private void performAttack(Enumerations.AttackType attackType) {
+    private void performAttack(Fighter fromFighter, Fighter onFighter, Enumerations.AttackType attackType) {
 
-        if(!player.isAlreadyAttacking && !isEnemyDead && !isPlayerDead) {
-            player.isAlreadyAttacking = true;
+        if(!fromFighter.isAlreadyAttacking && !isEnemyDead && !isPlayerDead) {
+            fromFighter.isAlreadyAttacking = true;
 
-            player.setAnimation(this.getAnimationOnFighter(player,attackType));
-            int oldHealth = enemy.getHealth();
-            if (player.overlaps(enemy)) {
+            fromFighter.setAnimation(this.getAnimationOnFighter(fromFighter,attackType));
+            int oldHealth = onFighter.getHealth();
+            if (fromFighter.overlaps(onFighter)) {
                 if(oldHealth > 0){
                     int damage = attackType == Enumerations.AttackType.PUNCH ? 5 : 10;
                     int healthAfterDamage = oldHealth - damage;
                     healthAfterDamage = healthAfterDamage < 0 ? 0 : healthAfterDamage;
-                    enemy.setHealth(healthAfterDamage);
+                    onFighter.setHealth(healthAfterDamage);
+
+                    float blowImpacet = onFighter.isOnLeft ? 15 : -15;
+                    onFighter.setX(onFighter.getX() + blowImpacet);
 
                     this.updateEnemyHealthBar();
                 }
@@ -224,7 +227,7 @@ public class GameScreen extends BaseScreen {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                performAttack(Enumerations.AttackType.KICK);
+                performAttack(player,enemy,Enumerations.AttackType.KICK);
             }
         });
 
@@ -232,7 +235,7 @@ public class GameScreen extends BaseScreen {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                performAttack(Enumerations.AttackType.PUNCH);
+                performAttack(player,enemy,Enumerations.AttackType.PUNCH);
             }
         });
 
@@ -428,7 +431,8 @@ public class GameScreen extends BaseScreen {
 
                 float blowDistance = this.isPlayerOnLeftOfEnemy() ? 60 : -60;
                 float newEnemyX =  enemy.getX() + blowDistance;
-                enemy.setX(newEnemyX);
+                float newEnemyY = enemy.getY() - blowDistance;
+                enemy.setPosition(newEnemyX,newEnemyY);
                 enemy.setAnimation(this.getAnimationOnFighter(enemy,Enumerations.AttackType.FINISHING_MOVE));
 
                 this.removeAllLiseners();
