@@ -3,6 +3,7 @@ package com.gbc.inderdeep.screens;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.gbc.inderdeep.actions.SceneActions;
+import com.gbc.inderdeep.managers.SoundManager;
 import com.gbc.inderdeep.ui.DialogBox;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
@@ -93,6 +94,8 @@ public class StoryScreen extends BaseScreen {
 
     @Override
     protected void setupScene() {
+
+        SoundManager.getInstance().startBackGroundMusic();
 
         this.addBackgroundImage();
 

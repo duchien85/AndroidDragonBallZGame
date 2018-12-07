@@ -22,6 +22,7 @@ import com.gbc.inderdeep.actors.Player;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
 import com.gbc.inderdeep.enumerations.Enumerations;
+import com.gbc.inderdeep.managers.SoundManager;
 import com.gbc.inderdeep.ui.HealthBar;
 import com.gbc.inderdeep.utils.ImageNames;
 import com.gbc.inderdeep.utils.SkinNames;
@@ -205,7 +206,18 @@ public class GameScreen extends BaseScreen {
             int oldHealth = onFighter.getHealth();
             if (fromFighter.overlaps(onFighter)) {
                 if(oldHealth > 0){
-                    int damage = attackType == Enumerations.AttackType.PUNCH ? 5 : 10;
+                    SoundManager soundManager = SoundManager.getInstance();
+
+                    int damage;
+                    if(attackType == Enumerations.AttackType.PUNCH){
+                        damage = 5;
+                        soundManager.playPunchSound();
+                    }
+                    else {
+                        damage = 10;
+                        soundManager.playKickSound();
+                    }
+
                     int healthAfterDamage = oldHealth - damage;
                     healthAfterDamage = healthAfterDamage < 0 ? 0 : healthAfterDamage;
                     onFighter.setHealth(healthAfterDamage);
@@ -409,7 +421,7 @@ public class GameScreen extends BaseScreen {
         else if(timeLeftMinutes == 0 && timeLeftSeconds < 1){
             this.removeAllLiseners();
 
-            if (player.getHealth() < enemy.getHealth()){
+            if (player.getHealth() > enemy.getHealth()){
                 this.removeAllLiseners();
                 this.showResult("You Won!");
             }else {
@@ -433,6 +445,7 @@ public class GameScreen extends BaseScreen {
     }
 
     private void showResult(String text){
+        table.setVisible(false);
         label.setText(text);
         overlayTable.setVisible(true);
     }
@@ -450,6 +463,7 @@ public class GameScreen extends BaseScreen {
         if(!timesUp && !isEnemyDead && !isPlayerDead){
             if(enemy.getHealth() <= 0){
                 this.isEnemyDead = true;
+                this.shouldEnemyMove = false;
                 this.performFinishingMoveAnimationOn(enemy);
                 this.removeAllLiseners();
 
@@ -457,6 +471,7 @@ public class GameScreen extends BaseScreen {
             }
             else if(player.getHealth() <= 0) {
                 this.isPlayerDead = true;
+                this.shouldPlayerMove = false;
                 this.performFinishingMoveAnimationOn(player);
                 this.removeAllLiseners();
                 this.showResult("You Lost!");
@@ -464,26 +479,25 @@ public class GameScreen extends BaseScreen {
         }
 
     }
+
     Random random = new Random(100);
     private void handleEnemyAI(){
 
-
-        if(random.nextInt() % 2 == 0) {
+        if(!isEnemyDead && random.nextInt() % 2 == 0) {
             this.shouldEnemyMove = true;
             Vector2 enemyVector = new Vector2(this.enemy.getX(),this.enemy.getY());
             Vector2 playerVector = new Vector2(this.player.getX(),this.player.getY());
 
 
             Vector2 resultantVector;
-            if (enemy.getHealth() < 30){
+            if (enemy.getHealth() < 30 && enemy.getHealth() < player.getHealth()){
+                //Run cause almost dead
                 resultantVector = enemyVector.sub(playerVector);
             }
             else{
+                //Follow and attack
                 resultantVector = playerVector.sub(enemyVector);
             }
-
-//            Gdx.app.log("R X",Float.toString(resultantVector.x));
-//            Gdx.app.log("R Y",Float.toString(resultantVector.y));
 
             this.enemy.resumeMovement();
 

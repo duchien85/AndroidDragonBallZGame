@@ -1,6 +1,7 @@
 package com.gbc.inderdeep.managers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.gbc.inderdeep.utils.AudioNames;
 
@@ -8,13 +9,17 @@ public class SoundManager {
 
     // Singleton: unique instance
     private static SoundManager instance;
-    private long backgroundMusicID = -1;
-    private boolean isBackgroundMusicRunning = false;
-    private Sound backgroundMusic;
+    private Music bgMusic;
+    private Sound punchAudio;
+    private Sound kickAudio;
 
-    // Singleton: private constructor
-    private SoundManager() {
-        this.backgroundMusic = Gdx.audio.newSound(Gdx.files.internal(AudioNames.backgroundMusicAudio));
+    private long punchAudioID = -1;
+    private long kickAudioID = -1;
+
+    SoundManager(){
+        bgMusic = Gdx.audio.newMusic(Gdx.files.internal(AudioNames.backgroundMusicAudio));
+        punchAudio = Gdx.audio.newSound(Gdx.files.internal(AudioNames.punchAudio));
+        kickAudio = Gdx.audio.newSound(Gdx.files.internal(AudioNames.kickAudio));
     }
 
     // Singleton: retrieve instance
@@ -25,37 +30,24 @@ public class SoundManager {
         return instance;
     }
 
-    public void startBackGroundMusic(boolean looping){
-        if(this.backgroundMusicID == -1){
-            Gdx.app.log("SoundManager","Playing sound!");
-            this.backgroundMusicID = this.backgroundMusic.loop();
-//            this.backgroundMusic.setLooping(this.backgroundMusicID,looping);
-            this.isBackgroundMusicRunning = true;
-        }
+    public void startBackGroundMusic(){
+        bgMusic.play();
+        bgMusic.setLooping(true);
     }
 
-    public void pauseOrPlayBackgroundMusic(){
-        if(this.backgroundMusicID != -1){
-            if (this.isBackgroundMusicRunning) {
-                Gdx.app.log("SoundManager","Pausing sound!");
-                this.isBackgroundMusicRunning = false;
-                this.backgroundMusic.pause(this.backgroundMusicID);
-            }
-            else {
-                Gdx.app.log("SoundManager","Resuming sound!");
-                this.isBackgroundMusicRunning = true;
-                this.backgroundMusic.resume(this.backgroundMusicID);
-            }
-        }else {
-            this.startBackGroundMusic(true);
+    public void playPunchSound(){
+
+        if(punchAudioID != -1){
+            punchAudio.stop(punchAudioID);
         }
+        punchAudioID = punchAudio.play(1.0f);
     }
 
-    public void stopBackgroundMusic(){
-        if(this.backgroundMusicID != -1){
-            this.backgroundMusic.stop(this.backgroundMusicID);
-            this.backgroundMusicID = -1;
+    public void playKickSound(){
+        if(kickAudioID != -1){
+            kickAudio.stop(kickAudioID);
         }
+        kickAudioID = kickAudio.play(1.0f);
     }
 
 }
