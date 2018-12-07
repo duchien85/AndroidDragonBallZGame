@@ -43,7 +43,8 @@ public class Enumerations {
 
     public enum AttackType {
         PUNCH,
-        KICK
+        KICK,
+        FINISHING_MOVE
     };
 
 }

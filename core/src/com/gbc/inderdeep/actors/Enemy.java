@@ -19,6 +19,10 @@ public class Enemy extends Fighter{
 
         rightKick = loadAnimationFromFiles(ImageNames.krillinRightKick,0.1f,false);
 
+        death = loadAnimationFromFiles(ImageNames.krillinDeath,0.3f,false);
+
+        rightDeath = loadAnimationFromFiles(ImageNames.krillinRightDeath,0.3f,false);
+
         this.setBoundaryRectangle();
 
         setScale(2.5f);

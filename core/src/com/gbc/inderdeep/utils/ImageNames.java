@@ -78,6 +78,9 @@ public class ImageNames {
                                                     "sprites/krillin/left/kick_4.png",
                                                     "sprites/krillin/left/kick_5.png" };
 
+    public static final String[] krillinDeath = { "sprites/krillin/left/death_0.png",
+                                                    "sprites/krillin/left/death_1.png"};
+
     public static final String[] krillinRightIdle = { "sprites/krillin/right/idle_0.png",
                                                         "sprites/krillin/right/idle_1.png",
                                                         "sprites/krillin/right/idle_2.png",
@@ -96,5 +99,8 @@ public class ImageNames {
                                                         "sprites/krillin/right/kick_3.png",
                                                         "sprites/krillin/right/kick_4.png",
                                                         "sprites/krillin/right/kick_5.png" };
+
+    public static final String[] krillinRightDeath = { "sprites/krillin/right/death_0.png",
+                                                        "sprites/krillin/right/death_1.png"};
 
 }

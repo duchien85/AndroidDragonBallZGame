@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.gbc.inderdeep.actors.Enemy;
+import com.gbc.inderdeep.actors.Fighter;
 import com.gbc.inderdeep.actors.Player;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
@@ -171,14 +172,16 @@ public class GameScreen extends BaseScreen {
         }
     }
 
-    private Animation<TextureRegion> getAnimation(Enumerations.AttackType attackType){
+    private Animation<TextureRegion> getAnimationOnFighter(Fighter fighter, Enumerations.AttackType attackType){
 
         Animation<TextureRegion> animation;
         if (attackType == Enumerations.AttackType.KICK) {
-            animation = player.isOnLeft ? player.kick : player.rightKick;
+            animation = fighter.isOnLeft ? fighter.kick : fighter.rightKick;
         }
-        else {
-            animation = player.isOnLeft ? player.punch : player.rightPunch;
+        else if (attackType == Enumerations.AttackType.PUNCH){
+            animation = fighter.isOnLeft ? fighter.punch : fighter.rightPunch;
+        }else {
+            animation = fighter.isOnLeft ? fighter.death : fighter.rightDeath;
         }
 
         return animation;
@@ -189,10 +192,9 @@ public class GameScreen extends BaseScreen {
         if(!player.isAlreadyAttacking && !isEnemyDead && !isPlayerDead) {
             player.isAlreadyAttacking = true;
 
-            player.setAnimation(this.getAnimation(attackType));
-
+            player.setAnimation(this.getAnimationOnFighter(player,attackType));
+            int oldHealth = enemy.getHealth();
             if (player.overlaps(enemy)) {
-                int oldHealth = enemy.getHealth();
                 if(oldHealth > 0){
                     int damage = attackType == Enumerations.AttackType.PUNCH ? 5 : 10;
                     int healthAfterDamage = oldHealth - damage;
@@ -359,9 +361,15 @@ public class GameScreen extends BaseScreen {
 
     private void handleWinLooseConditions(){
 
-        if(!timesUp){
+        if(!timesUp && !isEnemyDead && !isPlayerDead){
             if(enemy.getHealth() <= 0){
                 this.isEnemyDead = true;
+
+                float blowDistance = this.isPlayerOnLeftOfEnemy() ? 60 : -60;
+                float newEnemyX =  enemy.getX() + blowDistance;
+                enemy.setX(newEnemyX);
+                enemy.setAnimation(this.getAnimationOnFighter(enemy,Enumerations.AttackType.FINISHING_MOVE));
+
                 //TODO: Show player win text
                 this.removeAllLiseners();
                 Gdx.app.log("WinLooseStatus","Player Won!!");
@@ -399,13 +407,13 @@ public class GameScreen extends BaseScreen {
     @Override
     public void update(float delta) {
 
-        if(enemy.isAnimationFinished()){
+        if(enemy.isAnimationFinished() && !isEnemyDead){
             player.isAlreadyAttacking = false;
             Animation animation = enemy.isOnLeft ? enemy.idle : enemy.rightIdle;
             enemy.setAnimation(animation);
         }
 
-        if(player.isAnimationFinished()){
+        if(player.isAnimationFinished() && !isPlayerDead){
             player.isAlreadyAttacking = false;
             Animation animation = player.isOnLeft ? player.idle : player.rightIdle;
             player.setAnimation(animation);
@@ -417,9 +425,7 @@ public class GameScreen extends BaseScreen {
 
         this.handleWinLooseConditions();
 
-        if(!timesUp && !isEnemyDead && !isPlayerDead) {
-            this.handleActorUpdates(delta);
-        }
+        this.handleActorUpdates(delta);
 
     }
 

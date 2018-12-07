@@ -13,11 +13,13 @@ public class Fighter extends ActorBeta {
     public Animation<TextureRegion> run;
     public Animation<TextureRegion> punch;
     public Animation<TextureRegion> kick;
+    public Animation<TextureRegion> death;
 
     public Animation<TextureRegion> rightIdle;
     public Animation<TextureRegion> rightRun;
     public Animation<TextureRegion> rightPunch;
     public Animation<TextureRegion> rightKick;
+    public Animation<TextureRegion> rightDeath;
 
     public boolean isAlreadyAttacking = false;
 
