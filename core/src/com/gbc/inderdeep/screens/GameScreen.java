@@ -19,6 +19,7 @@ import com.gbc.inderdeep.actors.Player;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
 import com.gbc.inderdeep.enumerations.Enumerations;
+import com.gbc.inderdeep.managers.ScreenManager;
 import com.gbc.inderdeep.ui.HealthBar;
 import com.gbc.inderdeep.utils.ImageNames;
 import com.gbc.inderdeep.utils.SkinNames;
@@ -370,22 +371,29 @@ public class GameScreen extends BaseScreen {
                 enemy.setX(newEnemyX);
                 enemy.setAnimation(this.getAnimationOnFighter(enemy,Enumerations.AttackType.FINISHING_MOVE));
 
-                //TODO: Show player win text
+                ResultScreen.PLAYER_WON = true;
+                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
+
                 this.removeAllLiseners();
                 Gdx.app.log("WinLooseStatus","Player Won!!");
             }
             else if(player.getHealth() <= 0) {
                 this.isPlayerDead = true;
-                //TODO: Show player loose text
+
+                ResultScreen.PLAYER_WON = false;
+                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
+
                 this.removeAllLiseners();
                 Gdx.app.log("WinLooseStatus","Player Lost!!");
             }
         }else {
             //TODO: Show win - loose text
             if (player.getHealth() < enemy.getHealth()){
-                Gdx.app.log("WinLooseStatus","Player Lost!!");
+                ResultScreen.PLAYER_WON = false;
+                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
             }else {
-                Gdx.app.log("WinLooseStatus","Player Won!!");
+                ResultScreen.PLAYER_WON = true;
+                ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.RESULT_SCREEN,0.5f);
             }
 
         }

@@ -2,6 +2,8 @@ package com.gbc.inderdeep.utils;
 
 public class ImageNames {
     public static final String splashScreenLogo = "images/peppy_sheppy_games_logo.png";
+    public static final String winImage = "images/win_text.png";
+    public static final String looseImage = "images/loose_text.png";
     public static final String backgroundImage = "backgrounds/dragon_ballz_level_bg.jpeg";
     public static final String dialogBackground = "sprites/ui/dialog.png";
 

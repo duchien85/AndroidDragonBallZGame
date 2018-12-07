@@ -2,6 +2,7 @@ package com.gbc.inderdeep.enumerations;
 
 import com.gbc.inderdeep.base.BaseScreen;
 import com.gbc.inderdeep.screens.GameScreen;
+import com.gbc.inderdeep.screens.ResultScreen;
 import com.gbc.inderdeep.screens.SplashScreen;
 import com.gbc.inderdeep.screens.StoryScreen;
 
@@ -34,6 +35,16 @@ public class Enumerations {
             public BaseScreen getScreen(Object... params) {
                 if (screen == null){
                     screen = new StoryScreen();
+                }
+                return screen;
+            }
+        },
+
+        RESULT_SCREEN {
+            private BaseScreen screen;
+            public BaseScreen getScreen(Object... params) {
+                if (screen == null){
+                    screen = new ResultScreen();
                 }
                 return screen;
             }
