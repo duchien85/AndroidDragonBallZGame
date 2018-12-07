@@ -1,7 +1,7 @@
 package com.gbc.inderdeep.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.gbc.inderdeep.actors.DialogBox;
+import com.gbc.inderdeep.ui.DialogBox;
 
 /**
  * Created by markapptist on 2018-11-16.

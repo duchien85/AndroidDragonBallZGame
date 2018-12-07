@@ -1,12 +1,6 @@
 package com.gbc.inderdeep.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.gbc.inderdeep.MainGame;
-import com.gbc.inderdeep.actions.SceneActions;
-import com.gbc.inderdeep.actors.DialogBox;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
 import com.gbc.inderdeep.base.Scene;
@@ -14,7 +8,6 @@ import com.gbc.inderdeep.enumerations.Enumerations;
 import com.gbc.inderdeep.managers.ScreenManager;
 import com.gbc.inderdeep.utils.ImageNames;
 import com.gbc.inderdeep.utils.SceneSegment;
-import com.gbc.inderdeep.utils.Textures;
 
 public class SplashScreen extends BaseScreen {
 
@@ -53,9 +46,7 @@ public class SplashScreen extends BaseScreen {
 
         if(splashScene.isSceneFinished())
         {
-            //TODO: Updated this later
-//            ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.STORY_SCREEN,0.5f);
-            ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.GAME_SCREEN,0.5f);
+            ScreenManager.getInstance().fadeInToScreen(Enumerations.Screen.STORY_SCREEN,0.5f);
         }
 
     }

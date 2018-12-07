@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.gbc.inderdeep.base.ActorBeta;
+import com.gbc.inderdeep.enumerations.Enumerations;
 
 public class Fighter extends ActorBeta {
 
@@ -23,9 +24,11 @@ public class Fighter extends ActorBeta {
     public int acceleration = 900;
 
     private int health = 100;
+    public int maxHealth;
 
-    Fighter() {
+    Fighter(int maxHealth) {
         super();
+        this.maxHealth = maxHealth;
     }
 
     @Override

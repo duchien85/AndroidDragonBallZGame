@@ -3,7 +3,7 @@ package com.gbc.inderdeep.screens;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.gbc.inderdeep.actions.SceneActions;
-import com.gbc.inderdeep.actors.DialogBox;
+import com.gbc.inderdeep.ui.DialogBox;
 import com.gbc.inderdeep.base.ActorBeta;
 import com.gbc.inderdeep.base.BaseScreen;
 import com.gbc.inderdeep.base.Scene;
@@ -11,7 +11,6 @@ import com.gbc.inderdeep.enumerations.Enumerations;
 import com.gbc.inderdeep.managers.ScreenManager;
 import com.gbc.inderdeep.utils.ImageNames;
 import com.gbc.inderdeep.utils.SceneSegment;
-import com.gbc.inderdeep.utils.Textures;
 
 public class StoryScreen extends BaseScreen {
 

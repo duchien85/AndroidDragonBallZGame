@@ -1,4 +1,4 @@
-package com.gbc.inderdeep.actors;
+package com.gbc.inderdeep.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 import com.gbc.inderdeep.base.ActorBeta;
+import com.gbc.inderdeep.utils.ImageNames;
+import com.gbc.inderdeep.utils.SkinNames;
 
 import java.awt.TextField;
 
@@ -26,9 +28,9 @@ public class DialogBox extends ActorBeta {
 
     public DialogBox(float x, float y, Stage s) {
         super(x, y, s);
-        loadTexture("sprites/ui/dialog.png");
+        loadTexture(ImageNames.dialogBackground);
 
-        skin = new Skin(Gdx.files.internal("skins/quantum-horizon/skin/quantum-horizon-ui.json"));
+        skin = new Skin(Gdx.files.internal(SkinNames.quantumUIComponents));
 
         dialogLabel = new Label(" ", skin, "default");
         dialogLabel.setWrap(true);

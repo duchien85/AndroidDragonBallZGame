@@ -4,8 +4,8 @@ import com.gbc.inderdeep.utils.ImageNames;
 
 public class Enemy extends Fighter{
 
-    public Enemy() {
-        super();
+    public Enemy(int maxHealth) {
+        super(maxHealth);
 
         idle = loadAnimationFromFiles(ImageNames.krillinIdle, 0.2f, true);
 

@@ -101,7 +101,7 @@ public class BaseScreen implements Screen, InputProcessor {
         tableContainer.setSize(screenWidth, screenHeight);
         tableContainer.setPosition((screenWidth - cw) - (tableContainer.getWidth() / 2), (screenHeight - ch) / 2.0f);
         tableContainer.fillX();
-        tableContainer.setDebug(true);
+//        tableContainer.setDebug(true);
 
         this.table.setSize(screenWidth, screenHeight);
         this.table.setBounds(0, 0, Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
@@ -139,12 +139,12 @@ public class BaseScreen implements Screen, InputProcessor {
 
         update(delta);
 
-        this.mainStage.setDebugAll(true);
+//        this.mainStage.setDebugAll(true);
 
         this.mainStage.draw();
         this.stage.draw();
 
-        this.table.setDebug(true);
+//        this.table.setDebug(true);
     }
 
     @Override

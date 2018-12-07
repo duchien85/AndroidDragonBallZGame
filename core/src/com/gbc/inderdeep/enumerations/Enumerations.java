@@ -41,5 +41,10 @@ public class Enumerations {
         public abstract BaseScreen getScreen(Object... params);
     }
 
+    public enum AttackType {
+        PUNCH,
+        KICK
+    };
+
 }
 

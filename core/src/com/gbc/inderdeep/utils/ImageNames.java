@@ -3,9 +3,12 @@ package com.gbc.inderdeep.utils;
 public class ImageNames {
     public static final String splashScreenLogo = "images/peppy_sheppy_games_logo.png";
     public static final String backgroundImage = "backgrounds/dragon_ballz_level_bg.jpeg";
+    public static final String dialogBackground = "sprites/ui/dialog.png";
 
     //GOKU Image Assets
     public static final String gokuStoryImage = "sprites/goku/goku_story_sprite.png";
+
+    public static final String gokuFightSceneHUD = "sprites/goku/goku_fight_hud.png";
 
     public static final String[] gokuIdle = { "sprites/goku/left/idle_0.png",
                                                 "sprites/goku/left/idle_1.png",
@@ -52,7 +55,9 @@ public class ImageNames {
                                                 "sprites/goku/right/kick_6.png" };
 
     //KRILLIN Image Assets
-    public static final String krillinStoryImage = "sprites/krillin/left/krillin_story_sprite.png";
+    public static final String krillinStoryImage = "sprites/krillin/krillin_story_sprite.png";
+
+    public static final String krillinFightSceneHUD = "sprites/krillin/krillin_fight_hud.png";
 
     public static final String[] krillinIdle = { "sprites/krillin/left/idle_0.png",
                                                  "sprites/krillin/left/idle_1.png",
